@@ -1,4 +1,4 @@
-## New visualizer Open3d igual que visualizer_v1 pero "mas interactivo" 
+## New visualizer Open3d igual que visualizer_v1 pero en vez de terminal, en una webpage
 # Jan 2025
 # connect to Azure Blob Storage 
 # display all blob in order 
@@ -16,8 +16,9 @@ from flask import Flask, jsonify, request, redirect, render_template, send_file
 from mimetypes import guess_type
 import open3d as o3d
 import time 
+import numpy as np
 
-BLOB_CONNECTION_STRING = 
+BLOB_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=storagevisualizer;AccountKey=Sc1KrUTuRwgnCML86yVTtYJfhdI7osxXce4AM2hYaaXwgjDweR6NUHImawJXS7KToGf1HszobA8G+AStDsgvqw==;EndpointSuffix=core.windows.net"
 FRAME_RATE = 1/30
 
 # initialize flask application
@@ -34,9 +35,24 @@ except Exception as e:
 	print(f"Error listing containers of the Azure Blob Storage. Error: {e}")
 
 
-# define routes 
-@app.route("/") # displays the options in the selectable part. AJAX --> dinamically uploading the options
-def index():
+# AUX functions 
+def download_blob(blob_client, target_blob):
+    with open(target_blob, "wb") as download_file:
+        download_file.write(blob_client.download_blob().readall())
+    return target_blob
+
+
+def rotate_point_cloud(pc):
+    angle_rad = np.radians(180) 
+    R = pc.get_rotation_matrix_from_xyz((0, angle_rad, angle_rad))
+    pc.rotate(R)
+    return pc
+
+# define route() decorators to bind a function to a URL 
+# displays the options in the selectable part. AJAX --> dinamically uploading the options
+@app.route("/") 
+def view_cointainer(): 
+
 	return render_template('index.html') # File saved in src_azurefun/templates/index.html
 
 # list all avaliable cointainers in connection string  
@@ -49,6 +65,67 @@ def get_containers():
 	except Exception as e:
 		print(e)
 	return jsonify (containers_name)
+
+@app.route("/get_visualization", methods=['POST', 'GET'])
+def get_visualization():
+	if request.method == 'POST':
+		chosen_container = request.form.get('container_name')
+		chosen_pointsize = request.form.get('point_size')
+		chosen_framerate = request.form.get('fps_rate')
+		chosen_framerate = int(chosen_framerate)
+		
+		# download blobs
+		container_clients = blob_service_client.get_container_client(chosen_container)
+		blob_list = container_clients.list_blobs()
+		point_clouds = []
+		for blob in blob_list:
+				# Get blob client and download the blob content
+			blob_client = container_clients.get_blob_client(blob)
+			filename = download_blob(blob_client, blob.name)
+			# añadir nube de puntos a una lista 
+			if filename:
+				try:
+					point_cloud = o3d.io.read_point_cloud(filename)
+					rotate_pc = rotate_point_cloud(point_cloud)
+					if not rotate_pc.is_empty():
+						point_clouds.append(rotate_pc)
+					else:
+						print(f"Blob {blob.name} ERROR. Invalid data")
+				except Exception as e:
+					print(f"ERROR {blob.name}: {e}")
+			else:
+				return "Please provide all parameters."
+
+		vis = o3d.visualization.Visualizer()
+		vis.create_window(window_name='PointCloud visualizer', height=540, width=960)
+		vis.get_render_option().background_color = [0, 0, 0]
+		vis.get_render_option().point_size = float(chosen_pointsize)
+		chosen_framerate = 1/chosen_framerate
+		try:
+			current_index = 0 
+			if point_clouds:
+				vis.add_geometry(point_clouds[current_index]) 
+			while True:
+				vis.remove_geometry(point_clouds[current_index], reset_bounding_box = False)  # false to keep current viewpoint 
+				current_index = (current_index + 1) % len(point_clouds) 
+				current_point_cloud = point_clouds[current_index]
+				vis.add_geometry(current_point_cloud, reset_bounding_box = False)  # false to keep current viewpoint 
+
+				vis.update_geometry(current_point_cloud)
+				vis.update_renderer()
+
+				time.sleep(chosen_framerate) 
+				if not vis.poll_events():
+					break            
+		except KeyboardInterrupt:
+			print("Closing window...")
+		finally:
+			vis.destroy_window()
+			msg = "endofvisualization"
+			return jsonify (msg)
+	# añadir una nota de que la visualizacion se cerro pero lo otro tiene que continuar (reiniciar?)
+	
+
 
 
 if __name__ == "__main__":
