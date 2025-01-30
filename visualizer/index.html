@@ -1,0 +1,73 @@
+<!-- frontend module, layout ADD AJAX Fetch for containers and then Blob Names-->
+<!DOCTYPE html>
+<html lang = "en">  <!-- document's language -->
+<head>
+    <title>VisualizerJan2025</title> <!-- el nombre de la pestañita -->
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+    <link href="../axZm/axZm.css" type="text/css" rel="stylesheet" /> <!--  AJAX-ZOOM javascript && CSS -->
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script async src="opencv.js" type="text/JavaScript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> <!--  https://www.ajax-zoom.com/examples/example15.php -->
+    <script type="text/javascript" src="../axZm/jquery.axZm.js"></script> <!--  Include jQuery core, only if not already present -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch container names when the page loads
+            fetch('/get_containers')
+                .then(response => response.json())
+                .then(data => {
+                    const containerSelect = document.getElementById('containerSelect');
+                    data.forEach(blob => {
+                        const option = document.createElement('option');
+                        option.value = blob;
+                        option.textContent = blob;
+                        containerSelect.appendChild(option); 
+                    });
+                })
+                .catch(error => console.error('Error fetching names of containers:', error));
+        });
+
+    </script>
+</head>
+
+<!-- start building the page's content -->
+<body> 
+    <!-- Sidebar Selectable panel, en un menu que se despliega -->
+    <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:25%; position: absolute; left: 0; top: 0;">
+        <h3 class="w3-bar-item" style="background-color: gray;">Avaliable sequence</h3>
+        <form id="blob_name" method="GET" action="/get_containers" style="display: flex; flex-direction: column;"> 
+            <label for="containerSelect">Select</label>
+            <select name="container_name" id="containerSelect">
+                <option value="" disabled selected>Choose sequence</option>
+            </select>
+        </form> 
+        <form>
+            <p>
+                <label>Point size (0.0-5.0)</label>
+                <input class="w3-input w3-border w3-round" name="first" type="text">
+            </p>
+            <p>
+                <label>FPS (15, 30...) </label>
+                <input class="w3-input w3-border w3-round" name="first" type="text">
+            </p>
+            
+        </form> 
+        <button type="submit" style="background-color: dodgerblue; width: 50%; margin-block-end: 100%;">
+            <b>Load</b>
+        </button>
+    </div>
+    <!-- Rest of the script -->
+    <div style="margin-left: 25%">
+        <div class="container">
+            <h1 style="background-color: dodgerblue; text-align:center">
+                <b>Visualizer .ply</b>
+            </h1>
+        </div>
+        <div class="w3-container">
+            <h2> Content will display in Open3d window, wait...</h2>
+        </div>
+        <!-- quizas un progress bar -->
+        <!-- el open3d que se abrira en un ventana nueva -->
+    </div> 
+</body>
+</html>
