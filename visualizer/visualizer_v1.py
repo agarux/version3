@@ -1,27 +1,37 @@
 ## New visualizer Open3d 
 # Jan 2025
 # connect to Azure Blob Storage 
-# display all blob in order 
+# display all blobs in order 
 # Source : tfm mikel using his azure functions  
 #          https://learn.microsoft.com/es-es/azure/storage/blobs/storage-blob-python-get-started?tabs=azure-ad
 #          https://stackoverflow.com/questions/65774814/adding-new-points-to-point-cloud-in-real-time-open3d
 #          https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create-python 
 # contiene las clases principales (objetos de cliente) que puede usar para operar een el servicio, los contenedores y los blobs
-# añadir que si ya estan descargados (los blobs), no volver a descargarlos 
+
+######
+# V1 # datos por la terminal 
+######
+
 import io
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import numpy as np
 import open3d as o3d
 import time
+import os
 
-BLOB_CONNECTION_STRING = 
+BLOB_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=storagevisualizer;AccountKey=Sc1KrUTuRwgnCML86yVTtYJfhdI7osxXce4AM2hYaaXwgjDweR6NUHImawJXS7KToGf1HszobA8G+AStDsgvqw==;EndpointSuffix=core.windows.net"
 FRAME_RATE = 1/30
 
 def download_blob(blob_client, target_blob):
-    with open(target_blob, "wb") as download_file:
-        download_file.write(blob_client.download_blob().readall())
-    return target_blob
-
+    if os.path.isfile(target_blob):
+        print("No se descargo del azure")
+        return target_blob
+    else:
+        with open(target_blob, "wb") as download_file:
+            print("Descargando del azure...")
+            download_file.write(blob_client.download_blob().readall())
+            return target_blob
+    
 
 def rotate_point_cloud(pc):
     angle_rad = np.radians(180) 
@@ -64,7 +74,7 @@ def result(point_clouds, point_size, fps):
     fps = 1/fps
     vis = o3d.visualization.Visualizer()
     vis.create_window(window_name='PointCloud visualizer', height=540, width=960)
-    vis.get_render_option().background_color = [0, 0, 0]
+    vis.get_render_option().background_color = [255, 255, 255]
     vis.get_render_option().point_size = float(point_size)
 
     try:
@@ -93,16 +103,18 @@ def result(point_clouds, point_size, fps):
 def data_selection_prompt():
     print("Select the size of the points (0.0 - 5.0): ")
     ps = input("Selection: ")
-    print("Select the sequence: new29 (0) or media (1): ")
+    print("Select the sequence: depth (0), media (1), new29 (2): ")
     seq = input("Selected number:")
     seq = int(seq)
     print("Velocidad de reproduccion en FPS (30FPS, 15FPS...): ")
     fps = input("Selected FPS number:")
     fps = int(fps)
     if seq == 0:
-        name_container = "new29"
+        name_container = "depth"
     if seq == 1:
         name_container = "media"
+    if seq == 2:
+        name_container = "new29"
     return name_container, ps, fps
 
 def main():
@@ -115,5 +127,4 @@ def main():
     result(point_clouds, point_size, fps)
 
     
-        
 main()
