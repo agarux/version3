@@ -4,20 +4,17 @@
 #        --> mmsegmentation
 # a binary mask is created to get only people and then the pc is created with depth frames
 # checkear cuda device y ver que este libre
+#! limitar a 1 CPU
 
 import base64
-import datetime
 import json
 import os
 import threading
 import numpy as np
-import matplotlib as plt
 import cv2
 import open3d as o3d 
-import shutil
 from threading import Timer
 import paho.mqtt.client as mqtt
-from PIL import Image # binary mask
 from mmseg.apis import inference_model, init_model, show_result_pyplot
 from logger_config import logger # logs 
 from helper_funs import get_config
@@ -29,16 +26,47 @@ MQTT_PORT = 1883
 MQTT_TOPIC_CAM = '1cameraframes'
 MQTT_QOS = 1
 SEND_FRECUENCY = 1
-NUM_TOTAL_CAMERAS = 1
+NUM_TOTAL_CAMERAS = 8
 
 received_frames_dict = {}
 received_frames_lock = threading.Lock()
 batch_timeout = 15 # seconds
 
 
-def create_pc_from_data(color_image_path, depth_image_path, K, target_ds):
+def decode_files(color_enc, depth_enc):
+    ## RGB file decode  
+    decode_c_file_binary = base64.b64decode(color_enc)
+    if len(decode_c_file_binary) % 2 != 0:
+        decode_c_file_binary += b'\x00'
+        logger.debug(f"Adjusted len color_image_data: {len(decode_c_file_binary)}\n")
+    frame_color_decoded = cv2.imdecode(np.frombuffer(decode_c_file_binary, dtype=np.uint8), cv2.IMREAD_COLOR)
+    if frame_color_decoded is None:
+        logger.error("Decoded color image is None. Error loaf¡ding image or corverting color image to RGB. Check the data format")
     
-    color_image, depth_image = decode_files(color_image_path, depth_image_path)
+    ## Depth file decode  
+    decode_d_file_binary = base64.b64decode(depth_enc)
+    if len(decode_d_file_binary) % 2 != 0:
+        decode_d_file_binary += b'\x00'
+        logger.debug(f"Adjusted len depth_image_data: {len(decode_d_file_binary)}\n")
+    frame_depth_decoded = cv2.imdecode(np.frombuffer(decode_d_file_binary, dtype=np.uint16), cv2.IMREAD_UNCHANGED)
+    if frame_depth_decoded is None:
+        logger.error("Decoded depth image is None, check the data format")
+
+    return frame_color_decoded, frame_depth_decoded
+
+
+# use to create de point cloud from encoded data
+def encode_files (new_rgb_name_frame, new_depth_name_frame):
+    with open(new_rgb_name_frame, "rb") as color_file:
+        encoded_c_string = base64.b64encode(color_file.read()).decode('utf-8')
+    with open(new_depth_name_frame, "rb") as depth_file:
+        encoded_d_string = base64.b64encode(depth_file.read()).decode('utf-8')
+    return encoded_c_string, encoded_d_string
+
+
+def create_pc_from_enc_data(color_image_enc, depth_image_enc, K, target_ds):
+    
+    color_image, depth_image = decode_files(color_image_enc, depth_image_enc)
     try:
         # Convert BGR to RGB
         color_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2RGB)
@@ -57,7 +85,8 @@ def create_pc_from_data(color_image_path, depth_image_path, K, target_ds):
 
     logger.debug(f"PCD len before downsampling {len(pcd.points)}")
     
-    vox_size, _ = get_config(target_ds)
+    #vox_size, _ = get_config(target_ds)
+    vox_size = 0.00001
     logger.debug(f"[TEST] Voxel size: {vox_size}")
     pcd = pcd.voxel_down_sample(voxel_size=vox_size)
     
@@ -68,27 +97,37 @@ def create_pc_from_data(color_image_path, depth_image_path, K, target_ds):
     return pcd
 
 
-def apply_mask(out_file_model, rgb_name_frame):
-    logger.info(f"Creating rgba frame of {os.path.basename(rgb_name_frame)}...")
-    # create binary mask  
-    seg_img = cv2.imread(out_file_model) # img: segmented image
-    color_img = cv2.imread(rgb_name_frame) # img: color image
-
-    # Mask where people are represented by the color [61, 5, 150]
-    mask = np.all(seg_img == [61, 5, 150], axis=-1)  # Boolean mask
+def apply_mask(out_file_model, rgb_name_frame, depth_name_frame):
+    logger.info(f"Creating rgba frame of {os.path.basename(rgb_name_frame)} and depth_a of {os.path.basename(depth_name_frame)}...")
     
+    seg_img = cv2.imread(out_file_model)  # img: segmented image
+    color_img = cv2.imread(rgb_name_frame)  # img: color image
+    depth_img = cv2.imread(depth_name_frame, cv2.IMREAD_UNCHANGED)  # img: depth image, keep original channels
+
+    # Create the mask where people are represented by the color [61, 5, 150]
+    mask = np.all(seg_img == [61, 5, 150], axis=-1)  # Boolean mask
+
     # Create the binary mask image
     binary_mask = np.zeros_like(seg_img)
     binary_mask[mask] = [255, 255, 255]  # White where people are, black elsewhere
     cv2.imwrite(out_file_model, binary_mask)
     logger.info(f"Binary mask of frame {rgb_name_frame} created")
 
-    # Apply the mask to the color image (directly using the mask to set background to black)
-    color_img[~mask] = 0  # Set the background (non-person) pixels to black
+    # Prepare the RGBA color image
+    color_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2BGRA)
+
+    # Set the alpha channel: 255 for people, 0 for the background
+    color_img[:, :, 3] = mask.astype(np.uint8) * 255 
+
+    # Save the color image with the alpha channel
     cv2.imwrite(rgb_name_frame, color_img)
-    logger.info(f"Color frame with mask applied saved as {rgb_name_frame}")
-    
-    return rgb_name_frame
+
+    # Depth frame with black background 
+    depth_img[~mask] = 0
+    cv2.imwrite(depth_name_frame, depth_img)
+
+    return rgb_name_frame, depth_name_frame
+
 
 
 # Dataset ADE20k: person index = 12 [0-149] 150 classes -> color = [150, 5, 61] 
@@ -134,37 +173,6 @@ def segmentator(color_frame_path, camera_name):
     return result, out_file_model 
 
 
-def decode_files(color_enc, depth_enc):
-    ## RGB file decode  
-    decode_c_file_binary = base64.b64decode(color_enc)
-    if len(decode_c_file_binary) % 2 != 0:
-        decode_c_file_binary += b'\x00'
-        logger.debug(f"Adjusted len color_image_data: {len(decode_c_file_binary)}\n")
-    frame_color_decoded = cv2.imdecode(np.frombuffer(decode_c_file_binary, dtype=np.uint8), cv2.IMREAD_COLOR)
-    if frame_color_decoded is None:
-        logger.error("Decoded color image is None. Error loaf¡ding image or corverting color image to RGB. Check the data format")
-    
-    ## Depth file decode  
-    decode_d_file_binary = base64.b64decode(depth_enc)
-    if len(decode_d_file_binary) % 2 != 0:
-        decode_d_file_binary += b'\x00'
-        logger.debug(f"Adjusted len depth_image_data: {len(decode_d_file_binary)}\n")
-    frame_depth_decoded = cv2.imdecode(np.frombuffer(decode_d_file_binary, dtype=np.uint16), cv2.IMREAD_UNCHANGED)
-    if frame_depth_decoded is None:
-        logger.error("Decoded depth image is None, check the data format")
-
-    return frame_color_decoded, frame_depth_decoded
-
-
-# use to create de point cloud from encoded data
-def encode_files (new_rgb_name_frame, new_depth_name_frame):
-    with open(new_rgb_name_frame, "rb") as color_file:
-        encoded_c_string = base64.b64encode(color_file.read()).decode('utf-8')
-    with open(new_depth_name_frame, "rb") as depth_file:
-        encoded_d_string = base64.b64encode(depth_file.read()).decode('utf-8')
-    return encoded_c_string, encoded_d_string
-
-
 # process frames of the same number 
 def process_frames(msg_frames_list, num_frame):
     ## FIRST: create directories and save all frames of the list msg_frames_list
@@ -187,7 +195,7 @@ def process_frames(msg_frames_list, num_frame):
         target_ds = 1 # params if were exist more than one method or dataset ///// using now to not modify the rest of scripts 
         #print(K)
     
-        frame_color_decoded, frame_depth_decoded = decode_files(enc_c, enc_d)
+        frame_color_decoded, frame_depth_decoded = decode_files(enc_c, enc_d) # decode to save images
         
         # save frames
         path_color_frame = os.path.join(base_dict_color, color_frame_name)
@@ -203,14 +211,14 @@ def process_frames(msg_frames_list, num_frame):
             logger.error(f"Error in preprocessing frame: {path_color_frame} [SEGMENTATION]. No segmented image")
         else:
             # apply_mask. args: path of the mask and the path of the original rgb image 
-            new_rgb_name_frame = apply_mask(seg_frame_path, path_color_frame)
+            new_rgb_name_frame, new_depth_name_frame = apply_mask(seg_frame_path, path_color_frame, path_depth_frame)
         
         ## PRE-THIRD encode files (reading frames from pahts doesnt work [downsalmpling: ~1million points -> 3 points], create pc from encoding files works)
-        enc_c, enc_d = encode_files(new_rgb_name_frame, path_depth_frame)
+        enc_c, enc_d = encode_files(new_rgb_name_frame, new_depth_name_frame)
         ## THIRD: create pc from each rgb image
-        pc = create_pc_from_data(enc_c, enc_d, K, target_ds)
+        pc = create_pc_from_enc_data(enc_c, enc_d, K, target_ds)
 
-        #save_and_upload_pcd(pc, f"20250123_simple_pc_{camera_name}_{num_frame}.ply", container_name)
+        save_and_upload_pcd(pc, f"20250131_simple_pc_{camera_name}_{num_frame}.ply", container_name)
 
         pcd_list.append(pc)
         if pc is None:
@@ -221,12 +229,14 @@ def process_frames(msg_frames_list, num_frame):
         i += 1
 
     print(f"Tamaño de la lista {len(pcd_list)}")
+
     # delete frames after process the frame 
-    try:
-        shutil.rmtree('images/')  
-        logger.info(f"DELETE all images directories")
-    except:
-        pass
+    #try:
+    #    shutil.rmtree('images/')  
+    #    logger.info(f"DELETE all images directories")
+    #except:
+    #    pass
+
     ## FOURTH: fusion 
     # params if were exist more than one method or dataset ///// using now to not modify the rest of scripts 
     target_registration = 0 # icp_p2p_registration_ransac   # MIKEL: message_json_list[0].get('reg')
@@ -239,7 +249,7 @@ def process_frames(msg_frames_list, num_frame):
         
         reg_name = "icp_p2p_ransac" #reg_name = registration_names_from_id.get(target_registration, "unknown")
         dataset_name = "real" #dataset_name_from_id.get(target_ds, "unknown")
-        blob_name_reg = f"20250127_reg_{num_frame}_{reg_name}_{dataset_name}.ply"
+        blob_name_reg = f"20250131_final_{num_frame}_{reg_name}_{dataset_name}.ply"
         
         save_and_upload_pcd(final_fused_point_cloud, blob_name_reg, container_name)
 
