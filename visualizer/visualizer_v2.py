@@ -9,6 +9,10 @@
 # contiene las clases principales (objetos de cliente) que puede usar para operar een el servicio, los contenedores y los blobs
 # https://www.geeksforgeeks.org/image-and-video-storage-with-azure-blob-storage-media-applications/
 
+######
+# V2 # datos por FLASK, al cerrar se muere 
+######
+
 import io
 import os
 from azure.storage.blob import BlobServiceClient
@@ -36,10 +40,14 @@ except Exception as e:
 
 
 # AUX functions 
-def download_blob(blob_client, target_blob):
-    with open(target_blob, "wb") as download_file:
-        download_file.write(blob_client.download_blob().readall())
-    return target_blob
+def download_blob(blob_client, target_blob): # target_blob is the name of the blob: blob.name
+	# if the files are already downloaded, dont download them just read them 
+	if os.path.isfile(target_blob): 
+		return target_blob
+	else:
+		with open(target_blob, "wb") as download_file:
+			download_file.write(blob_client.download_blob().readall())
+		return target_blob
 
 
 def rotate_point_cloud(pc):
@@ -48,11 +56,12 @@ def rotate_point_cloud(pc):
     pc.rotate(R)
     return pc
 
+
+
 # define route() decorators to bind a function to a URL 
 # displays the options in the selectable part. AJAX --> dinamically uploading the options
 @app.route("/") 
 def view_cointainer(): 
-
 	return render_template('index.html') # File saved in src_azurefun/templates/index.html
 
 # list all avaliable cointainers in connection string  
@@ -72,7 +81,6 @@ def get_visualization():
 		chosen_container = request.form.get('container_name')
 		chosen_pointsize = request.form.get('point_size')
 		chosen_framerate = request.form.get('fps_rate')
-		chosen_framerate = int(chosen_framerate)
 		
 		# download blobs
 		container_clients = blob_service_client.get_container_client(chosen_container)
@@ -95,12 +103,13 @@ def get_visualization():
 					print(f"ERROR {blob.name}: {e}")
 			else:
 				return "Please provide all parameters."
-
+		
+		# Visualization 
 		vis = o3d.visualization.Visualizer()
 		vis.create_window(window_name='PointCloud visualizer', height=540, width=960)
-		vis.get_render_option().background_color = [0, 0, 0]
+		vis.get_render_option().background_color = [255, 255, 255]
 		vis.get_render_option().point_size = float(chosen_pointsize)
-		chosen_framerate = 1/chosen_framerate
+		chosen_framerate = 1/int(chosen_framerate)
 		try:
 			current_index = 0 
 			if point_clouds:
