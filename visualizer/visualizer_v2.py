@@ -10,11 +10,13 @@
 # https://www.geeksforgeeks.org/image-and-video-storage-with-azure-blob-storage-media-applications/
 
 ######
-# V2 # datos por FLASK, al cerrar se muere 
+# V2  Flask is a single-threaded by default 
+# Oped 3D must be launched in separate thread to not block the main thread (FLASK) 
 ######
 
 import io
 import os
+import threading
 from azure.storage.blob import BlobServiceClient
 from flask import Flask, jsonify, request, redirect, render_template, send_file
 from mimetypes import guess_type
@@ -57,10 +59,39 @@ def rotate_point_cloud(pc):
     return pc
 
 
+def show_blob_o3d(chosen_pointsize, chosen_framerate, chosen_background, point_clouds):
+	# Visualization 
+	vis = o3d.visualization.Visualizer()
+	# create window: determinated size and determinated position
+	vis.create_window(window_name='PointCloud visualizer', height=540, width=960, left = 540, top = 960)
+	vis.get_render_option().background_color = chosen_background
+	vis.get_render_option().point_size = float(chosen_pointsize)
+	chosen_framerate = 1/int(chosen_framerate)
+	try:
+		current_index = 0 
+		if point_clouds:
+			vis.add_geometry(point_clouds[current_index]) 
+		while True:
+			vis.remove_geometry(point_clouds[current_index], reset_bounding_box = False)  # false to keep current viewpoint 
+			current_index = (current_index + 1) % len(point_clouds) 
+			current_point_cloud = point_clouds[current_index]
+			vis.add_geometry(current_point_cloud, reset_bounding_box = False)  # false to keep current viewpoint 
+
+			vis.update_geometry(current_point_cloud)
+			vis.update_renderer()
+
+			time.sleep(chosen_framerate) 
+			if not vis.poll_events():
+				break            
+	except KeyboardInterrupt:
+		print("Closing window...")
+	finally:
+		vis.destroy_window()
+
 
 # define route() decorators to bind a function to a URL 
 # displays the options in the selectable part. AJAX --> dinamically uploading the options
-@app.route("/") 
+@app.route("/", methods=['POST', 'GET']) 
 def view_cointainer(): 
 	return render_template('index.html') # File saved in src_azurefun/templates/index.html
 
@@ -75,12 +106,21 @@ def get_containers():
 		print(e)
 	return jsonify (containers_name)
 
+
 @app.route("/get_visualization", methods=['POST', 'GET'])
 def get_visualization():
 	if request.method == 'POST':
-		chosen_container = request.form.get('container_name')
-		chosen_pointsize = request.form.get('point_size')
-		chosen_framerate = request.form.get('fps_rate')
+		try:
+			chosen_container = request.form.get('container_name')
+			chosen_pointsize = request.form.get('point_size')
+			chosen_framerate = request.form.get('fps_rate')
+			chosen_background = request.form.get('color_bkg')
+			if chosen_background == 'black':
+				chosen_background = [0, 0, 0]
+			if chosen_background == 'white':
+				chosen_background = [255, 255, 255]
+		except Exception as e:
+			return "Please provide all parameters."
 		
 		# download blobs
 		container_clients = blob_service_client.get_container_client(chosen_container)
@@ -101,41 +141,15 @@ def get_visualization():
 						print(f"Blob {blob.name} ERROR. Invalid data")
 				except Exception as e:
 					print(f"ERROR {blob.name}: {e}")
-			else:
-				return "Please provide all parameters."
-		
-		# Visualization 
-		vis = o3d.visualization.Visualizer()
-		vis.create_window(window_name='PointCloud visualizer', height=540, width=960)
-		vis.get_render_option().background_color = [255, 255, 255]
-		vis.get_render_option().point_size = float(chosen_pointsize)
-		chosen_framerate = 1/int(chosen_framerate)
-		try:
-			current_index = 0 
-			if point_clouds:
-				vis.add_geometry(point_clouds[current_index]) 
-			while True:
-				vis.remove_geometry(point_clouds[current_index], reset_bounding_box = False)  # false to keep current viewpoint 
-				current_index = (current_index + 1) % len(point_clouds) 
-				current_point_cloud = point_clouds[current_index]
-				vis.add_geometry(current_point_cloud, reset_bounding_box = False)  # false to keep current viewpoint 
 
-				vis.update_geometry(current_point_cloud)
-				vis.update_renderer()
-
-				time.sleep(chosen_framerate) 
-				if not vis.poll_events():
-					break            
-		except KeyboardInterrupt:
-			print("Closing window...")
-		finally:
-			vis.destroy_window()
-			msg = "endofvisualization"
-			return jsonify (msg)
-	# añadir una nota de que la visualizacion se cerro pero lo otro tiene que continuar (reiniciar?)
+		thread = threading.Thread(target=show_blob_o3d, args=(chosen_pointsize, chosen_framerate, chosen_background, point_clouds))
+		thread.start()
+		return jsonify({'status': 'success', 'message': 'Open3D window started'})
+		#return "Open3d window created"
 	
-
-
+	
+		
+	
 
 if __name__ == "__main__":
 	app.run(debug=False, port = 5002)
