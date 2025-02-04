@@ -27,10 +27,18 @@
                     .catch(error => console.error('Error fetching names of containers:', error));
             });        
         </script>
+        <style>
+            .w3-container {
+                /*display: flex;*/
+                background-color: rgb(228, 228, 228);
+                flex-direction: column;
+                justify-content: space-between; 
+            }
+        </style>
     </head>
     <!-- start building the page's content -->
     <body> 
-        <div class="w3-container" style="background-color: dodgerblue;">
+        <div class="w3-container">
             <h2><b>Visualizer of PLY files</b></h2>
         </div>
         <!--  Selectable panel to choose frame rate, point size and the sequence (the container) -->
@@ -59,16 +67,38 @@
                     <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="30"> 45</label><br>
                 </p>
                 <p>
-                    <button type="submit" style="background-color: dodgerblue;">
-                        <h4><b>Load</b></h4>
-                    </button>
+                    <h4><b>4. Select the background color</b></h4>
+                    <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="black"> Black</label><br>
+                    <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="white"> White</label><br>
                 </p>
             </form> 
-        </div>
-        <div class="w3-container" style="background-color: rgb(228, 228, 228); margin-block-end: 100%;"></divclass>
+            <button class="w3-button" style="background-color: dodgerblue;" id="open3dButton"> 
+                <h4><b>Load</b></h4> 
+            </button>
+        
             <p>
                 <text>Content will display in a Open3d window, wait...</text>
             </p>
+            <script>
+                $(document).ready(function(){
+                    $('#open3dButton').click(function(){
+                        var formData = $('#userinfo').serialize();  // Serialize the form data
+            
+                        $.ajax({
+                            url: '/get_visualization',
+                            method: 'POST',
+                            data: formData,  // Send the form data
+                            success: function(response) {
+                                console.log(response.status);  // Log success message
+                                alert(response.message);  // Optional: Notify user
+                            },
+                            error: function(error) {
+                                console.error("Error: ", error);
+                            }
+                        });
+                    });
+                });
+            </script>
         </div>
     </body>
 </html>
