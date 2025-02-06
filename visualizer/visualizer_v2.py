@@ -63,7 +63,7 @@ def show_blob_o3d(chosen_pointsize, chosen_framerate, chosen_background, point_c
 	# Visualization 
 	vis = o3d.visualization.Visualizer()
 	# create window: determinated size and determinated position
-	vis.create_window(window_name='PointCloud visualizer', height=540, width=960, left = 540, top = 960)
+	vis.create_window(window_name='PointCloud visualizer', height=540, width=960, left = 540, top = 430)
 	vis.get_render_option().background_color = chosen_background
 	vis.get_render_option().point_size = float(chosen_pointsize)
 	chosen_framerate = 1/int(chosen_framerate)
@@ -106,6 +106,9 @@ def get_containers():
 		print(e)
 	return jsonify (containers_name)
 
+@app.route("/back_to_main", methods=['POST', 'GET'])
+def back_to_main():
+	return render_template('index.html')
 
 @app.route("/get_visualization", methods=['POST', 'GET'])
 def get_visualization():
@@ -141,15 +144,12 @@ def get_visualization():
 						print(f"Blob {blob.name} ERROR. Invalid data")
 				except Exception as e:
 					print(f"ERROR {blob.name}: {e}")
-
+		# launch visualizer in a different thread to not blocking the main (Flask) 
 		thread = threading.Thread(target=show_blob_o3d, args=(chosen_pointsize, chosen_framerate, chosen_background, point_clouds))
 		thread.start()
-		return jsonify({'status': 'success', 'message': 'Open3D window started'})
+		return render_template('second_temp.html') #jsonify({'message': 'Open3D window started','status': 'success'})
 		#return "Open3d window created"
-	
-	
 		
-	
 
 if __name__ == "__main__":
 	app.run(debug=False, port = 5002)
