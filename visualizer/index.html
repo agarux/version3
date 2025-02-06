@@ -43,6 +43,7 @@
         </div>
         <!--  Selectable panel to choose frame rate, point size and the sequence (the container) -->
         <div class="w3-container" style="background-color: rgb(228, 228, 228);">
+            <p><h5>Provide ALL parameters (Sequence, point size, frame rate and color of background), if not, an error will display</h5></p>
             <form id="userinfo" method="POST" action="/get_visualization"> 
                 <p>
                     <h4><b>1. Select sequence</b></h4>
@@ -62,6 +63,7 @@
                 </p>
                 <p>
                     <h4><b>3. Selec frame rate</b></h4>
+                    <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="6"> 6</label><br>
                     <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="15"> 15</label><br>
                     <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="30"> 30</label><br>
                     <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="30"> 45</label><br>
