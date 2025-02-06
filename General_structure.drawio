@@ -1,9 +1,46 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0" version="26.0.11">
   <diagram name="Page-1" id="GbL4h78qmgQy-Zeg2BIY">
-    <mxGraphModel>
+    <mxGraphModel dx="1049" dy="1245" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-6" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="Ge9tx7M1TJ1UcIm08Vnr-1" target="Ge9tx7M1TJ1UcIm08Vnr-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-1" value="&lt;div&gt;Simulated cameras&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-135" y="-381" width="137" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-9" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="Ge9tx7M1TJ1UcIm08Vnr-4" target="Ge9tx7M1TJ1UcIm08Vnr-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-11" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="Ge9tx7M1TJ1UcIm08Vnr-4" target="Ge9tx7M1TJ1UcIm08Vnr-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="155" y="-169" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-4" value="&lt;div&gt;Server&lt;/div&gt;&lt;div&gt;- mmsegmentation&lt;/div&gt;&lt;div&gt;- icp&lt;/div&gt;&lt;div&gt;- send result to azure &lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="-274.37" width="120" height="65.75" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-5" value="MQTT Broker" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-113" y="-256" width="93" height="29" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-7" value="publish to" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-73" y="-313" width="86" height="31" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-10" value="subscribe to" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="-11" y="-264" width="104" height="31" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-12" value="storage data in Azure " style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="-172" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-14" style="edgeStyle=none;curved=1;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;startSize=8;endSize=8;" edge="1" parent="1" source="Ge9tx7M1TJ1UcIm08Vnr-13">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="216" y="-157" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ge9tx7M1TJ1UcIm08Vnr-13" value="&lt;div&gt;Local visualizer&lt;/div&gt;&lt;div&gt;(Open3d)&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="268" y="-178.5" width="120" height="43" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
