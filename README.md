@@ -2,7 +2,7 @@ cameras_sim (edge nodes -> cameras devices)
 
 main_mqtt_handler (server node -> mizar) 
 
-<b>VISUALIZER</b>
+<b>VISUALIZER: CREAR folder PARA TEMPLATES</b>
 
 version 1: Se elige parametros por la terminal
 
