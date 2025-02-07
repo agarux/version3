@@ -18,6 +18,7 @@ import io
 import os
 import threading
 from azure.storage.blob import BlobServiceClient
+from werkzeug.exceptions import HTTPException
 from flask import Flask, jsonify, request, redirect, render_template, send_file
 from mimetypes import guess_type
 import open3d as o3d
@@ -63,7 +64,7 @@ def show_blob_o3d(chosen_pointsize, chosen_framerate, chosen_background, point_c
 	# Visualization 
 	vis = o3d.visualization.Visualizer()
 	# create window: determinated size and determinated position
-	vis.create_window(window_name='PointCloud visualizer', height=540, width=960, left = 540, top = 430)
+	vis.create_window(window_name='PointCloud visualizer', height=540, width=960, left = 400, top = 300)
 	vis.get_render_option().background_color = chosen_background
 	vis.get_render_option().point_size = float(chosen_pointsize)
 	chosen_framerate = 1/int(chosen_framerate)
@@ -110,6 +111,15 @@ def get_containers():
 def back_to_main():
 	return render_template('index.html')
 
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # pass through HTTP errors
+    if isinstance(e, HTTPException):
+        return e
+    return render_template('error_template.html', e=e), 500
+
+
 @app.route("/get_visualization", methods=['POST', 'GET'])
 def get_visualization():
 	if request.method == 'POST':
@@ -147,8 +157,7 @@ def get_visualization():
 		# launch visualizer in a different thread to not blocking the main (Flask) 
 		thread = threading.Thread(target=show_blob_o3d, args=(chosen_pointsize, chosen_framerate, chosen_background, point_clouds))
 		thread.start()
-		return render_template('second_temp.html') #jsonify({'message': 'Open3D window started','status': 'success'})
-		#return "Open3d window created"
+		return render_template('second_temp.html') 
 		
 
 if __name__ == "__main__":
