@@ -9,38 +9,26 @@
         <script async src="opencv.js" type="text/JavaScript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> <!--  https://www.ajax-zoom.com/examples/example15.php -->
         <script type="text/javascript" src="../axZm/jquery.axZm.js"></script> <!--  Include jQuery core, only if not already present -->
-        <script>
-            // Fetch container names when the page loads
-            document.addEventListener('DOMContentLoaded', function() {
-                fetch('/get_containers')
-                    .then(response => response.json())
-                    .then(data => {
-                        const containerSelect = document.getElementById('containerSelect');
-                        data.forEach(container => {
-                            const option = document.createElement('option');
-                            option.value = container;
-                            option.textContent = container;
-                            containerSelect.appendChild(option); 
-                        });
-                    })
-                    .catch(error => console.error('Error fetching names of containers:', error));
-            });        
-        </script>
         <style>
-            .w3-container {
-                /*display: flex;*/
-                background-color: rgb(228, 228, 228);
-                flex-direction: column;
-                justify-content: space-between; 
+            div {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                margin-top: -100px;
+                margin-left: -100px;
             }
         </style>
     </head>
     <!-- start building the page's content -->
-    <body> 
+    <body style="background-color: rgb(228, 228, 228);"> 
         <div class="w3-container">
-            <p aling="center"> 
-                <h4>Click on the button to back to the selectable panel</h4>
-                <a href=back_to_main ><button class=grey style="height:60px;width:80px;background-color:dodgerblue;">BACK</button></a>
+            <p> 
+                <h4>Click on the button to navigate back to the selectable panel</h4>
+                <a href=back_to_main >
+                    <button class=grey style="height:60px;width:80px;background-color:dodgerblue;">
+                        <b>BACK</b>
+                    </button>
+                </a>
             </p>
         </div>
     </body>
