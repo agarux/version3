@@ -27,23 +27,18 @@
                     .catch(error => console.error('Error fetching names of containers:', error));
             });        
         </script>
-        <style>
-            .w3-container {
-                /*display: flex;*/
-                background-color: rgb(228, 228, 228);
-                flex-direction: column;
-                justify-content: space-between; 
-            }
-        </style>
     </head>
     <!-- start building the page's content -->
-    <body> 
-        <div class="w3-container">
+    <body style="background-color: rgb(228, 228, 228);"> 
+        <div class="w3-display-topright">
+            <img src="SFS24543.png" alt="icon">
+        </div>
+        <div class="w3-container w3-display-topmiddle">
             <h2><b>Visualizer of PLY files</b></h2>
         </div>
         <!--  Selectable panel to choose frame rate, point size and the sequence (the container) -->
-        <div class="w3-container" style="background-color: rgb(228, 228, 228);">
-            <p><h5>Provide ALL parameters (Sequence, point size, frame rate and color of background), if not, an error will display</h5></p>
+        <div class="w3-container w3-display-left"  >
+            <p aling="center"> <h5>Provide ALL parameters (sequence, point size, frame rate and color of background), if not, an error will display</h5></p>
             <form id="userinfo" method="POST" action="/get_visualization"> 
                 <p>
                     <h4><b>1. Select sequence</b></h4>
@@ -74,10 +69,9 @@
                     <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="white"> White</label><br>
                 </p>
             </form> 
-            <button class="w3-button" style="background-color: dodgerblue;" id="open3dButton"> 
+            <button class="grey" style="height:60px;width:80px;background-color:dodgerblue;" id="open3dButton"> 
                 <h4><b>Load</b></h4> 
             </button>
-        
             <p>
                 <text>Content will display in a Open3d window, wait...</text>
             </p>
@@ -85,7 +79,7 @@
                 $(document).ready(function(){
                     $('#open3dButton').click(function(){
                         var formData = $('#userinfo').serialize();  // Serialize the form data
-            
+                        
                         $.ajax({
                             url: '/get_visualization',
                             method: 'POST',
