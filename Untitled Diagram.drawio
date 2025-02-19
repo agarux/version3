@@ -107,7 +107,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="ryRkgRwx_wdWxkWjdC4p" name="ARCHT_overview">
-    <mxGraphModel dx="1106" dy="548" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1093" dy="1136" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -192,9 +192,6 @@
         <mxCell id="hky33qfQ_Xli1k_f2Rk0-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.89;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.42;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="hky33qfQ_Xli1k_f2Rk0-9" target="hky33qfQ_Xli1k_f2Rk0-11">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="hky33qfQ_Xli1k_f2Rk0-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="hky33qfQ_Xli1k_f2Rk0-11" target="hky33qfQ_Xli1k_f2Rk0-10">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="hky33qfQ_Xli1k_f2Rk0-43" value="" style="rounded=0;whiteSpace=wrap;html=1;shadow=0;strokeColor=#000000;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="180" y="35" width="380" height="145" as="geometry" />
         </mxCell>
@@ -206,6 +203,12 @@
         </mxCell>
         <mxCell id="hky33qfQ_Xli1k_f2Rk0-46" value="Visualiser" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="590" y="30" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hky33qfQ_Xli1k_f2Rk0-47" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=0.947;exitY=0.517;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="543.8599999999999" y="106.96500000000003" as="sourcePoint" />
+            <mxPoint x="619" y="107" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
