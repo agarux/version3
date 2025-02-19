@@ -214,7 +214,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="YJCKd149Xxd6O6z2ULb6" name="AzureStorage_LocalUser">
-    <mxGraphModel dx="965" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1192" dy="935" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -261,7 +261,7 @@
           <mxGeometry y="102" width="80" height="30" as="geometry" />
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-17" value="Sequence diagram - Web application" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=1;collapsible=0;width=210;height=20;" vertex="1" parent="1">
-          <mxGeometry x="40" y="160" width="760" height="480" as="geometry" />
+          <mxGeometry x="40" y="160" width="760" height="550" as="geometry" />
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-27" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;elbow=vertical;curved=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-17">
           <mxGeometry relative="1" as="geometry">
@@ -270,7 +270,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-19" value="Web APP" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
-          <mxGeometry x="320" y="40" width="100" height="430" as="geometry" />
+          <mxGeometry x="320" y="40" width="100" height="500" as="geometry" />
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-38" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;elbow=vertical;curved=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-17">
           <mxGeometry relative="1" as="geometry">
@@ -279,7 +279,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-20" value="Azure blob storage" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
-          <mxGeometry x="630" y="40" width="100" height="430" as="geometry" />
+          <mxGeometry x="630" y="40" width="100" height="500" as="geometry" />
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;curved=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-17">
           <mxGeometry relative="1" as="geometry">
@@ -294,7 +294,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-21" value="" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
-          <mxGeometry x="70" y="40" width="20" height="430" as="geometry" />
+          <mxGeometry x="70" y="40" width="20" height="500" as="geometry" />
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-24" value="User" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
           <mxGeometry x="50" y="20" width="60" height="30" as="geometry" />
@@ -319,8 +319,33 @@
             <mxPoint x="35" y="10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ijxHpPKKFO34YpHXwBI3-45" value="[constraint2]" style="line;strokeWidth=1;dashed=1;labelPosition=center;verticalLabelPosition=bottom;align=left;verticalAlign=top;spacingLeft=20;spacingTop=15;html=1;whiteSpace=wrap;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-43">
-          <mxGeometry y="125" width="380" height="10" as="geometry" />
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-45" value="[else]" style="line;strokeWidth=1;dashed=1;labelPosition=center;verticalLabelPosition=bottom;align=left;verticalAlign=top;spacingLeft=20;spacingTop=15;html=1;whiteSpace=wrap;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-43">
+          <mxGeometry y="80" width="380" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-50" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-43">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="30.17741935483889" y="40" as="sourcePoint" />
+            <mxPoint x="30" y="70" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="80" y="40" />
+              <mxPoint x="80" y="70" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-51" value="Display content in Open3D window" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-43">
+          <mxGeometry x="70" y="40" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-53" value="Get all blobs of chosen container" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-43">
+          <mxGeometry x="90" y="119" width="200" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-54" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-43">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="339.5" y="170" as="sourcePoint" />
+            <mxPoint x="29.700000000000045" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-55" value="Send downloaded blobs to Wen APP" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-43">
+          <mxGeometry x="80" y="149" width="220" height="30" as="geometry" />
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-48" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-17" target="ijxHpPKKFO34YpHXwBI3-19">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -334,6 +359,28 @@
         </mxCell>
         <mxCell id="ijxHpPKKFO34YpHXwBI3-49" value="Look for blobs of chosen container" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
           <mxGeometry x="410" y="230" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-52" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="369.54761904761904" y="418.9999999999998" as="sourcePoint" />
+            <mxPoint x="679.4999999999998" y="418.9999999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-57" value="Display content in Open3D window" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
+          <mxGeometry x="410" y="480" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-56" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="ijxHpPKKFO34YpHXwBI3-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="370.1774193548389" y="480" as="sourcePoint" />
+            <mxPoint x="370" y="510" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="420" y="480" />
+              <mxPoint x="420" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ijxHpPKKFO34YpHXwBI3-58" value="loop" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;recursiveResize=0;container=1;collapsible=0;width=40;height=20;" vertex="1" parent="ijxHpPKKFO34YpHXwBI3-17">
+          <mxGeometry x="25" y="150" width="715" height="390" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
