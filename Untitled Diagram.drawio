@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0" version="26.0.15" pages="5">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36" version="26.0.16" pages="5">
   <diagram name="UMLcomponent_dgrm" id="b5b7bab2-c9e2-2cf4-8b2a-24fd1a2a6d21">
     <mxGraphModel dx="1604" dy="795" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
@@ -107,7 +107,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="ryRkgRwx_wdWxkWjdC4p" name="ARCHT_overview">
-    <mxGraphModel dx="917" dy="454" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1190" dy="469" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -236,9 +236,6 @@
             <mxPoint x="292.76" y="165.05999999999997" as="sourcePoint" />
             <mxPoint x="620" y="100" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="8vWwF1ROG0J7syZYXO-w-31" value="Server" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="262.76" y="28.45999999999999" width="50" height="20" as="geometry" />
         </mxCell>
         <mxCell id="8vWwF1ROG0J7syZYXO-w-32" value="Visualiser" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="602.76" y="29.929999999999996" width="70" height="20" as="geometry" />
