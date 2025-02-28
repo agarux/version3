@@ -1,0 +1,98 @@
+<!-- frontend module, layout ADD AJAX Fetch for containers and then Blob Names-->
+<!DOCTYPE html>
+<html lang = "en">  <!-- document's language -->
+    <head>
+        <title>PC Visualiser</title> <!-- el nombre de la pestañita -->
+        <!--  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+        <link href="../axZm/axZm.css" type="text/css" rel="stylesheet" /> AJAX-ZOOM javascript && CSS -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <script src="https://www.w3schools.com/lib/w3.js"></script>
+        <script async src="opencv.js" type="text/JavaScript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> <!--  https://www.ajax-zoom.com/examples/example15.php -->
+        <script type="text/javascript" src="../axZm/jquery.axZm.js"></script> <!--  Include jQuery core, only if not already present -->
+        <script>
+            // Fetch container names when the page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                fetch('/get_containers')
+                    .then(response => response.json())
+                    .then(data => {
+                        const containerSelect = document.getElementById('containerSelect');
+                        data.forEach(container => {
+                            const option = document.createElement('option');
+                            option.value = container;
+                            option.textContent = container;
+                            containerSelect.appendChild(option); 
+                        });
+                    })
+                    .catch(error => console.error('Error fetching names of containers:', error));
+            });        
+        </script>
+    </head>
+    <!-- start building the page's content -->
+    <body style="background-color: rgb(228, 228, 228);"> 
+        <div class="w3-container">
+            <h2><b>Visualiser of PLY files</b></h2>
+        </div>
+        <!--  Selectable panel to choose frame rate, point size and the sequence (the container) -->
+        <div class="w3-cell-row">
+            <div class="w3-container w3-cell w3-mobile">
+                <p> Visualiser to display recorded sequences. 
+                    Provide all parameters requeried: sequence, point size, frame rate and color of background. If not, an error will display.</p>
+                <p> Master's thesis 2025</p>
+                <p> Master Science in Inthernet of Things</p>
+                <p> UPM</p>
+            </div>
+            <div class="w3-container w3-cell w3-mobile"  >
+                <form id="userinfo" method="POST" action="/get_visualization"> 
+                    <h4><b>1. Select sequence</b></h4>
+                    <label for="containerSelect"><b><select name="container_name" id="containerSelect"><option value="" disabled selected>...</option></select></label>
+
+                    <h4><b>2. Select point size</b></h4>
+                    <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="1.0"> 1.0</label><br>
+                    <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="1.5"> 1.5</label><br>
+                    <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="2.0"> 2.0</label><br>
+                    <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="2.5"> 2.5</label><br>
+                    <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="3.0"> 3.0</label><br>
+                
+                    <h4><b>3. Selec frame rate</b></h4>
+                    <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="6"> 6</label><br>
+                    <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="15"> 15</label><br>
+                    <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="30"> 30</label><br>
+                    <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="30"> 45</label><br>
+                
+                    <h4><b>4. Select the background color</b></h4>
+                    <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="black"> Black</label><br>
+                    <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="white"> White</label><br>
+                </form> 
+                <button class="grey" style="height:60px;width:80px;background-color:dodgerblue;" id="open3dButton"> 
+                    <h4><b>Load</b></h4> 
+                </button>
+                <script>
+                    $(document).ready(function(){
+                        $('#open3dButton').click(function(){
+                            var formData = $('#userinfo').serialize();  // Serialize the form data
+                            
+                            $.ajax({
+                                url: '/get_visualization',
+                                method: 'POST',
+                                data: formData,  // Send the form data
+                                success: function(response) {
+                                    console.log(response.status);  // Log success message
+                                    alert(response.message);  // Optional: Notify user
+                                },
+                                error: function(error) {
+                                    console.error("Error: ", error);
+                                }
+                            });
+                        });
+                    });
+                </script>
+            </div>
+            <div class="w3-container w3-cell w3-mobile"  >
+                <p> Content will display in a Open3d window, wait...</p> 
+            </div>
+        </div>
+    </body>
+</html>
