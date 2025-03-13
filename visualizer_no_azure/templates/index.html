@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>VisualizerJan2025</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script async src="opencv.js" type="text/JavaScript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> 
+    <script type="text/javascript" src="../axZm/jquery.axZm.js"></script> <!-- Include jQuery core -->
+    
+    <script>
+        // Fetch container names when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/get_files')
+                .then(response => response.json())
+                .then(data => {
+                    const containerSelect = document.getElementById('containerSelect');
+                    data.forEach(container => {
+                        const option = document.createElement('option');
+                        option.value = container;
+                        option.textContent = container;
+                        containerSelect.appendChild(option); 
+                    });
+                })
+                .catch(error => console.error('Error fetching names of containers:', error));
+        });        
+    </script>
+</head>
+<body style="background-color: rgb(228, 228, 228);">
+    <div class="w3-display-topright">
+        <img src="SFS24543.png" alt="icon">
+    </div>
+    <div class="w3-container w3-display-topmiddle">
+        <h2><b>Visualizer of PLY files</b></h2>
+    </div>
+    <!--  Selectable panel to choose frame rate, point size and the sequence (the container) -->
+    <div class="w3-container w3-display-left">
+        <p><h5>Provide ALL parameters (sequence, point size, frame rate, and color of background), if not, an error will display</h5></p>
+        <form id="userinfo" method="POST" action="/get_visualization"> 
+            <p>
+                <h4><b>1. Select sequence</b></h4>
+                <label for="containerSelect"><b>
+                    <select name="container_name" id="containerSelect">
+                        <option value="" disabled selected>...</option> 
+                    </select>
+                </label>
+            </p>
+            <p>
+                <h4><b>2. Select point size</b></h4>
+                <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="1.0"> 1.0</label><br>
+                <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="1.5"> 1.5</label><br>
+                <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="2.0"> 2.0</label><br>
+                <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="2.5"> 2.5</label><br>
+                <label for="point_size"><input class="w3-radio" type="radio" name="point_size" value="3.0"> 3.0</label><br>
+            </p>
+            <p>
+                <h4><b>3. Select frame rate</b></h4>
+                <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="6"> 6</label><br>
+                <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="15"> 15</label><br>
+                <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="30"> 30</label><br>
+                <label for="fps_rate"><input class="w3-radio" type="radio" name="fps_rate" value="45"> 45</label><br>
+            </p>
+            <p>
+                <h4><b>4. Select the background color</b></h4>
+                <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="black"> Black</label><br>
+                <label for="color_bkg"><input class="w3-radio" type="radio" name="color_bkg" value="white"> White</label><br>
+            </p>
+        </form> 
+        <button class="grey" style="height:60px;width:80px;background-color:dodgerblue;" id="open3dButton"> 
+            <h4><b>Load</b></h4> 
+        </button>
+        <p><text>Content will display in a Open3d window, wait...</text></p>
+        
+        <div id="threejs-container" style="width: 100%; height: 500px;"></div> <!-- Container for Three.js -->
+        
+        <script>
+            $(document).ready(function(){
+                $('#open3dButton').click(function(){
+                    var formData = $('#userinfo').serialize();  // Serialize the form data
+                    
+                    $.ajax({
+                        url: '/get_visualization',
+                        method: 'POST',
+                        data: formData,  // Send the form data
+                        success: function(response) {
+                            console.log(response.status);  // Log success message
+                            alert(response.message);  // Optional: Notify user
+
+                            // Now, you can load and visualize the point cloud data using Three.js
+                            // If you want to display in a Three.js canvas, you will need to include
+                            // the Three.js logic for loading the point cloud here
+                            // Example:
+                            // renderPointCloud(response.points);  // Assuming the response contains point cloud data
+                        },
+                        error: function(error) {
+                            console.error("Error: ", error);
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
